@@ -1,0 +1,29 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main  # Sesuaikan dengan branch utama Anda (main atau master)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+      
+      - name: Deploy to Railway
+        run: |
+          cd backend
+          railway up --service 3b8ffc83-bc10-432a-adc8-ed6ce7d1bd5e
+        env:
+          RAILWAY_TOKEN: a9bed536-4205-4297-a198-9befff2a8c92
