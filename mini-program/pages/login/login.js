@@ -39,9 +39,9 @@ Page({
     this.setData({ isLoading: true });
     
     // Kirim permintaan login ke API
-    console.log('Login URL:', `${app.globalData.apiBaseUrl}/auth/login`);
+    console.log('Login URL:', `${app.globalData.apiBaseUrl}/api/auth/login`);
     my.request({
-      url: `${app.globalData.apiBaseUrl}/auth/login`,
+      url: `${app.globalData.apiBaseUrl}/api/auth/login`,
       method: 'POST',
       data: {
         username,

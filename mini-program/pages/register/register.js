@@ -91,8 +91,9 @@ Page({
     this.setData({ isLoading: true });
     
     // Kirim permintaan register ke API
+    console.log('Register URL:', `${app.globalData.apiBaseUrl}/api/auth/register`);
     my.request({
-      url: `${app.globalData.apiBaseUrl}/auth/register`,
+      url: `${app.globalData.apiBaseUrl}/api/auth/register`,
       method: 'POST',
       data: {
         fullName,
