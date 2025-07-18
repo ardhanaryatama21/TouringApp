@@ -25,10 +25,17 @@ app.get('/api/health', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
+const authRoutes = require('./routes/auth');
+
+// Gunakan routes dengan prefix /api (standar)
+app.use('/api/auth', authRoutes);
 app.use('/api/users', require('./routes/users'));
 app.use('/api/groups', require('./routes/groups'));
 app.use('/api/calls', require('./routes/calls'));
+
+// Fallback routes untuk auth tanpa prefix /api (untuk kompatibilitas dengan Mini Program)
+console.log('Setting up fallback auth routes without /api prefix for backward compatibility');
+app.use('/auth', authRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
