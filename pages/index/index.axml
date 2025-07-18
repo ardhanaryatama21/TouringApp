@@ -1,0 +1,11 @@
+<view class="splash-container">
+  <view class="splash-content">
+    <image class="logo" src="/assets/logo.png" mode="aspectFit" />
+    <text class="app-name">TouringApp</text>
+    <text class="app-slogan">Komunikasi Grup Touring Lebih Mudah</text>
+    
+    <view class="loading">
+      <view class="spinner"></view>
+    </view>
+  </view>
+</view>

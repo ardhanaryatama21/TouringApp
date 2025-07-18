@@ -1,0 +1,44 @@
+<view class="register-container">
+  <view class="form-container">
+    <text class="form-title">Daftar Akun</text>
+    
+    <view class="form-item">
+      <text class="label">Nama Lengkap</text>
+      <input class="input" placeholder="Masukkan nama lengkap" value="{{fullName}}" onInput="onInputFullName" />
+    </view>
+    
+    <view class="form-item">
+      <text class="label">Email</text>
+      <input class="input" type="email" placeholder="Masukkan email" value="{{email}}" onInput="onInputEmail" />
+    </view>
+    
+    <view class="form-item">
+      <text class="label">Username</text>
+      <input class="input" placeholder="Masukkan username" value="{{username}}" onInput="onInputUsername" />
+    </view>
+    
+    <view class="form-item">
+      <text class="label">Password</text>
+      <input class="input" type="password" placeholder="Masukkan password" value="{{password}}" onInput="onInputPassword" />
+    </view>
+    
+    <view class="form-item">
+      <text class="label">Konfirmasi Password</text>
+      <input class="input" type="password" placeholder="Masukkan password kembali" value="{{confirmPassword}}" onInput="onInputConfirmPassword" />
+    </view>
+    
+    <button class="register-button" onTap="handleRegister">Daftar</button>
+    
+    <view class="login-link">
+      <text>Sudah punya akun? </text>
+      <text class="link" onTap="navigateToLogin">Masuk</text>
+    </view>
+  </view>
+  
+  <view class="loading-overlay" a:if="{{isLoading}}">
+    <view class="loading-content">
+      <loading type="spinner" color="#4A90E2" />
+      <text class="loading-text">Sedang mendaftar...</text>
+    </view>
+  </view>
+</view>

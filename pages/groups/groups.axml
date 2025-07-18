@@ -1,0 +1,100 @@
+<view class="groups-container">
+  <view class="header">
+    <text class="title">Grup Touring</text>
+    <button class="create-button" onTap="showCreateGroupModal">+ Buat Grup</button>
+  </view>
+  
+  <!-- Tab Navigation -->
+  <view class="tab-container">
+    <view class="tab {{activeTab === 'groups' ? 'active' : ''}}" onTap="switchTab" data-tab="groups">
+      <text>Grup Saya</text>
+    </view>
+    <view class="tab {{activeTab === 'invitations' ? 'active' : ''}}" onTap="switchTab" data-tab="invitations">
+      <text>Undangan</text>
+      <view class="badge" a:if="{{invitations.length > 0}}">{{invitations.length}}</view>
+    </view>
+  </view>
+  
+  <!-- Groups List -->
+  <view class="content-container" a:if="{{activeTab === 'groups'}}">
+    <view class="empty-state" a:if="{{groups.length === 0}}">
+      <image class="empty-icon" src="/assets/empty-groups.png" mode="aspectFit" />
+      <text class="empty-text">Anda belum memiliki grup</text>
+      <text class="empty-subtext">Buat grup baru atau terima undangan untuk bergabung dengan grup</text>
+    </view>
+    
+    <view class="groups-list" a:else>
+      <view class="group-card" a:for="{{groups}}" onTap="navigateToGroupDetail" data-id="{{item._id}}">
+        <view class="group-info">
+          <text class="group-name">{{item.name}}</text>
+          <text class="group-description">{{item.description}}</text>
+          <text class="group-members">{{item.members.length}} anggota</text>
+        </view>
+        <view class="group-actions">
+          <button class="call-button" catchTap="initiateGroupCall" data-id="{{item._id}}" data-name="{{item.name}}">
+            <image class="call-icon" src="/assets/call-icon.png" />
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Invitations List -->
+  <view class="content-container" a:if="{{activeTab === 'invitations'}}">
+    <view class="empty-state" a:if="{{invitations.length === 0}}">
+      <image class="empty-icon" src="/assets/empty-invitations.png" mode="aspectFit" />
+      <text class="empty-text">Tidak ada undangan</text>
+      <text class="empty-subtext">Anda akan melihat undangan untuk bergabung dengan grup di sini</text>
+    </view>
+    
+    <view class="invitations-list" a:else>
+      <view class="invitation-card" a:for="{{invitations}}">
+        <view class="invitation-info">
+          <text class="invitation-title">Undangan ke Grup</text>
+          <text class="group-name">{{item.group.name}}</text>
+          <text class="invitation-from">Dari: {{item.invitedBy.fullName}}</text>
+        </view>
+        <view class="invitation-actions">
+          <button class="accept-button" onTap="acceptInvitation" data-id="{{item._id}}">Terima</button>
+          <button class="reject-button" onTap="rejectInvitation" data-id="{{item._id}}">Tolak</button>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Create Group Modal -->
+  <view class="modal" a:if="{{showModal}}">
+    <view class="modal-mask" onTap="hideCreateGroupModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">Buat Grup Baru</text>
+        <text class="modal-close" onTap="hideCreateGroupModal">×</text>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">Nama Grup</text>
+          <input class="input" placeholder="Masukkan nama grup" value="{{newGroup.name}}" onInput="onInputGroupName" />
+        </view>
+        
+        <view class="form-item">
+          <text class="label">Deskripsi</text>
+          <textarea class="textarea" placeholder="Masukkan deskripsi grup" value="{{newGroup.description}}" onInput="onInputGroupDescription" />
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-button" onTap="hideCreateGroupModal">Batal</button>
+        <button class="submit-button" onTap="createGroup">Buat</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Loading Overlay -->
+  <view class="loading-overlay" a:if="{{isLoading}}">
+    <view class="loading-content">
+      <loading type="spinner" color="#4A90E2" />
+      <text class="loading-text">Memuat...</text>
+    </view>
+  </view>
+</view>

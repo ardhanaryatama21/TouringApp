@@ -1,0 +1,3 @@
+<view class="connection-status {{isConnected ? 'connected' : 'disconnected'}}">
+  <text class="status-text">{{statusText}}</text>
+</view>

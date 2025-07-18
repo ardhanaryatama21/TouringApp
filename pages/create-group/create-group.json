@@ -1,0 +1,6 @@
+{
+  "defaultTitle": "Buat Grup Baru",
+  "usingComponents": {
+    "connection-status": "/components/connection-status/connection-status"
+  }
+}

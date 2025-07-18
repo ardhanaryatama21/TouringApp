@@ -1,0 +1,27 @@
+.connection-status {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 8rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.connected {
+  background-color: #4CAF50;
+  color: #FFFFFF;
+  transform: translateY(-100%);
+}
+
+.disconnected {
+  background-color: #F44336;
+  color: #FFFFFF;
+  transform: translateY(0);
+}
+
+.status-text {
+  font-weight: 500;
+}

@@ -1,0 +1,87 @@
+<view class="profile-container">
+  <view class="profile-header">
+    <view class="profile-avatar">
+      <text class="avatar-text">{{userInfo.fullName[0]}}</text>
+    </view>
+    <text class="profile-name">{{userInfo.fullName}}</text>
+    <text class="profile-username">@{{userInfo.username}}</text>
+  </view>
+  
+  <view class="profile-info-card">
+    <view class="info-item">
+      <text class="info-label">Email</text>
+      <text class="info-value">{{userInfo.email}}</text>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-label">Jumlah Grup</text>
+      <text class="info-value">{{groupCount}}</text>
+    </view>
+  </view>
+  
+  <view class="settings-card">
+    <view class="settings-header">
+      <text class="settings-title">Pengaturan</text>
+    </view>
+    
+    <view class="settings-item" onTap="toggleNotifications">
+      <text class="settings-label">Notifikasi</text>
+      <switch checked="{{notificationsEnabled}}" onChange="toggleNotifications" color="#4A90E2" />
+    </view>
+    
+    <view class="settings-item" onTap="toggleSpeaker">
+      <text class="settings-label">Speaker Default</text>
+      <switch checked="{{speakerEnabled}}" onChange="toggleSpeaker" color="#4A90E2" />
+    </view>
+    
+    <view class="settings-item" onTap="showAbout">
+      <text class="settings-label">Tentang Aplikasi</text>
+      <image class="arrow-icon" src="/assets/arrow-right-icon.png" />
+    </view>
+  </view>
+  
+  <button class="logout-button" onTap="handleLogout">Keluar</button>
+  
+  <!-- About Modal -->
+  <view class="modal" a:if="{{showAboutModal}}">
+    <view class="modal-mask" onTap="hideAboutModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">Tentang Aplikasi</text>
+        <text class="modal-close" onTap="hideAboutModal">×</text>
+      </view>
+      
+      <view class="modal-body">
+        <view class="about-logo">
+          <image class="app-logo" src="/assets/logo.png" mode="aspectFit" />
+          <text class="app-name">TouringApp</text>
+        </view>
+        
+        <text class="app-version">Versi 1.0.0</text>
+        
+        <text class="app-description">
+          TouringApp adalah aplikasi untuk memudahkan komunikasi grup touring. Dengan TouringApp, Anda dapat membuat grup, mengundang anggota, dan melakukan panggilan grup dengan mudah.
+        </text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Logout Confirmation Modal -->
+  <view class="modal" a:if="{{showLogoutModal}}">
+    <view class="modal-mask"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">Konfirmasi</text>
+      </view>
+      
+      <view class="modal-body">
+        <text class="confirm-message">Apakah Anda yakin ingin keluar dari aplikasi?</text>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-button" onTap="cancelLogout">Batal</button>
+        <button class="confirm-button" onTap="confirmLogout">Keluar</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "defaultTitle": "Panggilan Grup",
+  "usingComponents": {
+    "connection-status": "/components/connection-status/connection-status"
+  },
+  "transparentTitle": "always",
+  "titleBarColor": "#1A1E2E"
+}

@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/groups/groups",
+    "pages/group-detail/group-detail",
+    "pages/create-group/create-group",
+    "pages/call/call",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "defaultTitle": "TouringApp",
+    "titleBarColor": "#4A90E2",
+    "backgroundColor": "#F5F5F9"
+  },
+  "tabBar": {
+    "textColor": "#404040",
+    "selectedColor": "#4A90E2",
+    "backgroundColor": "#FFFFFF",
+    "items": [
+      {
+        "pagePath": "pages/groups/groups",
+        "name": "Grup",
+        "icon": "assets/group-icon.png",
+        "activeIcon": "assets/group-icon-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "name": "Profil",
+        "icon": "assets/profile-icon.png",
+        "activeIcon": "assets/profile-icon-active.png"
+      }
+    ]
+  }
+}

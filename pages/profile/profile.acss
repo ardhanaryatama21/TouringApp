@@ -1,0 +1,232 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  padding: 30rpx;
+  background-color: #F5F5F9;
+  min-height: 100vh;
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+}
+
+.profile-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 80rpx;
+  background-color: #4A90E2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.avatar-text {
+  color: #FFFFFF;
+  font-size: 64rpx;
+  font-weight: bold;
+}
+
+.profile-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.profile-username {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.profile-info-card, .settings-card {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.info-item {
+  padding: 16rpx 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.info-value {
+  font-size: 32rpx;
+  color: #333333;
+}
+
+.settings-header {
+  margin-bottom: 20rpx;
+}
+
+.settings-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-label {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.arrow-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.logout-button {
+  background-color: #FF5252;
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: bold;
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 8rpx;
+  margin-top: 20rpx;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border-top-left-radius: 24rpx;
+  border-top-right-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999999;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+.about-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.app-logo {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 16rpx;
+}
+
+.app-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #4A90E2;
+}
+
+.app-version {
+  font-size: 28rpx;
+  color: #999999;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.app-description {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.confirm-message {
+  font-size: 32rpx;
+  color: #333333;
+  text-align: center;
+  margin: 20rpx 0;
+}
+
+.modal-footer {
+  display: flex;
+  padding: 20rpx 30rpx 40rpx;
+  gap: 20rpx;
+}
+
+.cancel-button, .confirm-button {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+  border-radius: 8rpx;
+}
+
+.cancel-button {
+  background-color: #F5F5F5;
+  color: #666666;
+}
+
+.confirm-button {
+  background-color: #FF5252;
+  color: #FFFFFF;
+}

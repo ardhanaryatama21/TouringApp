@@ -1,0 +1,75 @@
+<view class="call-container">
+  <connection-status />
+  <view class="call-header">
+    <view class="back-button" onTap="leaveCall">
+      <image class="back-icon" src="/assets/back-icon.svg" />
+    </view>
+    <text class="group-name">{{groupName}}</text>
+    <view class="call-status {{isConnected ? 'connected' : ''}}">
+      <text>{{callStatusText}}</text>
+    </view>
+  </view>
+  
+  <view class="participants-container">
+    <text class="section-title">Peserta ({{participants.length}})</text>
+    
+    <view class="participants-list">
+      <view class="participant-item" a:for="{{participants}}">
+        <view class="participant-avatar {{item.isSpeaking ? 'speaking' : ''}}">
+          <text class="avatar-text">{{item.name[0]}}</text>
+          <view class="speaking-indicator" a:if="{{item.isSpeaking}}"></view>
+        </view>
+        <view class="participant-info">
+          <text class="participant-name">{{item.name}}</text>
+          <text class="participant-status">{{item.isMuted ? 'Muted' : 'Berbicara'}}</text>
+        </view>
+        <view class="participant-you" a:if="{{item.isMe}}">
+          <text>Anda</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="call-controls">
+    <view class="control-button {{isMuted ? 'active' : ''}}" onTap="toggleMute">
+      <image class="control-icon" src="{{isMuted ? '/assets/mic-off-icon.svg' : '/assets/mic-icon.svg'}}" />
+      <text class="control-text">{{isMuted ? 'Unmute' : 'Mute'}}</text>
+    </view>
+    
+    <view class="control-button end-call" onTap="endCall">
+      <image class="control-icon" src="/assets/end-call-icon.svg" />
+      <text class="control-text">Akhiri</text>
+    </view>
+    
+    <view class="control-button {{isSpeakerOn ? 'active' : ''}}" onTap="toggleSpeaker">
+      <image class="control-icon" src="{{isSpeakerOn ? '/assets/speaker-on-icon.svg' : '/assets/speaker-off-icon.svg'}}" />
+      <text class="control-text">Speaker</text>
+    </view>
+  </view>
+  
+  <!-- Loading Overlay -->
+  <view class="loading-overlay" a:if="{{isLoading}}">
+    <view class="loading-content">
+      <loading type="spinner" color="#4A90E2" />
+      <text class="loading-text">{{loadingText}}</text>
+    </view>
+  </view>
+  
+  <!-- Error Modal -->
+  <view class="modal" a:if="{{showErrorModal}}">
+    <view class="modal-mask"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">Terjadi Kesalahan</text>
+      </view>
+      
+      <view class="modal-body">
+        <text class="error-message">{{errorMessage}}</text>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="submit-button" onTap="handleErrorModalClose">OK</button>
+      </view>
+    </view>
+  </view>
+</view>

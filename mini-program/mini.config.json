@@ -1,0 +1,21 @@
+{
+  "miniprogramRoot": "./",
+  "pluginRoot": "plugin",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "autoAudits": false,
+    "nodeModules": true,
+    "uglifyFileName": true
+  },
+  "appid": "your_alipay_appid",
+  "projectname": "TouringApp",
+  "description": "Aplikasi komunikasi grup touring",
+  "simulatorType": "alipay",
+  "simulatorPluginLibVersion": {},
+  "condition": {}
+}

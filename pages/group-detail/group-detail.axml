@@ -1,0 +1,100 @@
+<view class="group-detail-container">
+  <view class="header">
+    <view class="back-button" onTap="navigateBack">
+      <image class="back-icon" src="/assets/back-icon.png" />
+    </view>
+    <text class="title">Detail Grup</text>
+    <view class="call-button" onTap="initiateGroupCall">
+      <image class="call-icon" src="/assets/call-icon.png" />
+    </view>
+  </view>
+  
+  <view class="group-info-card">
+    <text class="group-name">{{group.name}}</text>
+    <text class="group-description">{{group.description}}</text>
+    <view class="group-meta">
+      <text class="group-creator">Dibuat oleh: {{group.creator.fullName}}</text>
+      <text class="group-date">{{createdDate}}</text>
+    </view>
+    
+    <!-- Tombol Hapus Grup (hanya untuk admin) -->
+    <button class="delete-button" onTap="showDeleteConfirmation" a:if="{{isCreator}}">
+      <image class="delete-icon" src="/assets/trash-icon.png" />
+      <text>Hapus Grup</text>
+    </button>
+  </view>
+  
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">Anggota ({{group.members.length}})</text>
+      <button class="invite-button" onTap="showInviteModal" a:if="{{isCreator}}">+ Undang</button>
+    </view>
+    
+    <view class="members-list">
+      <view class="member-item" a:for="{{group.members}}">
+        <view class="member-avatar">
+          <text class="avatar-text">{{item.fullName[0]}}</text>
+        </view>
+        <view class="member-info">
+          <text class="member-name">{{item.fullName}}</text>
+          <text class="member-username">@{{item.username}}</text>
+        </view>
+        <view class="member-role" a:if="{{item._id === group.creator._id}}">
+          <text class="role-badge">Admin</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Invite Modal -->
+  <view class="modal" a:if="{{showInviteModal}}">
+    <view class="modal-mask" onTap="hideInviteModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">Undang Anggota</text>
+        <text class="modal-close" onTap="hideInviteModal">×</text>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">Email</text>
+          <input class="input" placeholder="Masukkan email anggota" value="{{inviteEmail}}" onInput="onInputInviteEmail" />
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-button" onTap="hideInviteModal">Batal</button>
+        <button class="submit-button" onTap="inviteMember">Undang</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Delete Confirmation Modal -->
+  <view class="modal" a:if="{{showDeleteModal}}">
+    <view class="modal-mask" onTap="hideDeleteConfirmation"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">Konfirmasi Hapus</text>
+        <text class="modal-close" onTap="hideDeleteConfirmation">×</text>
+      </view>
+      
+      <view class="modal-body">
+        <text class="confirmation-text">Apakah Anda yakin ingin menghapus grup "{{group.name}}"?</text>
+        <text class="warning-text">Tindakan ini tidak dapat dibatalkan dan semua data grup akan hilang.</text>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-button" onTap="hideDeleteConfirmation">Batal</button>
+        <button class="delete-confirm-button" onTap="deleteGroup">Hapus Grup</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- Loading Overlay -->
+  <view class="loading-overlay" a:if="{{isLoading}}">
+    <view class="loading-content">
+      <loading type="spinner" color="#4A90E2" />
+      <text class="loading-text">Memuat...</text>
+    </view>
+  </view>
+</view>

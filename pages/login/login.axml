@@ -1,0 +1,34 @@
+<view class="login-container">
+  <view class="logo-container">
+    <image class="logo" src="/assets/logo.png" mode="aspectFit" />
+    <text class="app-name">TouringApp</text>
+  </view>
+  
+  <view class="form-container">
+    <text class="form-title">Masuk</text>
+    
+    <view class="form-item">
+      <text class="label">Username</text>
+      <input class="input" placeholder="Masukkan username" value="{{username}}" onInput="onInputUsername" />
+    </view>
+    
+    <view class="form-item">
+      <text class="label">Password</text>
+      <input class="input" type="password" placeholder="Masukkan password" value="{{password}}" onInput="onInputPassword" />
+    </view>
+    
+    <button class="login-button" onTap="handleLogin">Masuk</button>
+    
+    <view class="register-link">
+      <text>Belum punya akun? </text>
+      <text class="link" onTap="navigateToRegister">Daftar</text>
+    </view>
+  </view>
+  
+  <view class="loading-overlay" a:if="{{isLoading}}">
+    <view class="loading-content">
+      <loading type="spinner" color="#4A90E2" />
+      <text class="loading-text">Sedang masuk...</text>
+    </view>
+  </view>
+</view>

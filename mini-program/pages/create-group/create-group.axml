@@ -1,0 +1,63 @@
+<view class="container">
+  <view class="header">
+    <view class="back-button" onTap="navigateBack">
+      <image class="back-icon" src="/assets/back-icon.svg" />
+    </view>
+    <text class="header-title">Buat Grup Baru</text>
+  </view>
+  
+  <view class="form-container">
+    <view class="form-group">
+      <text class="form-label">Nama Grup</text>
+      <input class="form-input" placeholder="Masukkan nama grup" value="{{groupName}}" onInput="onGroupNameInput" />
+      <text class="error-text" a:if="{{errors.groupName}}">{{errors.groupName}}</text>
+    </view>
+    
+    <view class="form-group">
+      <text class="form-label">Deskripsi</text>
+      <textarea class="form-textarea" placeholder="Masukkan deskripsi grup" value="{{description}}" onInput="onDescriptionInput" maxlength="200" />
+      <text class="character-count">{{description.length}}/200</text>
+      <text class="error-text" a:if="{{errors.description}}">{{errors.description}}</text>
+    </view>
+    
+    <view class="form-group">
+      <text class="form-label">Kategori</text>
+      <picker class="form-picker" onChange="onCategoryChange" value="{{categoryIndex}}" range="{{categories}}">
+        <view class="picker-content">
+          <text>{{categories[categoryIndex]}}</text>
+          <image class="dropdown-icon" src="/assets/dropdown-icon.svg" />
+        </view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <text class="form-label">Ikon Grup</text>
+      <view class="icon-selector">
+        <view class="icon-option {{selectedIcon === 'travel' ? 'selected' : ''}}" onTap="selectIcon" data-icon="travel">
+          <image class="icon-image" src="/assets/travel-icon.svg" />
+        </view>
+        <view class="icon-option {{selectedIcon === 'hiking' ? 'selected' : ''}}" onTap="selectIcon" data-icon="hiking">
+          <image class="icon-image" src="/assets/hiking-icon.svg" />
+        </view>
+        <view class="icon-option {{selectedIcon === 'beach' ? 'selected' : ''}}" onTap="selectIcon" data-icon="beach">
+          <image class="icon-image" src="/assets/beach-icon.svg" />
+        </view>
+        <view class="icon-option {{selectedIcon === 'mountain' ? 'selected' : ''}}" onTap="selectIcon" data-icon="mountain">
+          <image class="icon-image" src="/assets/mountain-icon.svg" />
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <button class="submit-button" onTap="createGroup" loading="{{isLoading}}" disabled="{{isLoading}}">
+    Buat Grup
+  </button>
+  
+  <!-- Loading Overlay -->
+  <view class="loading-overlay" a:if="{{isLoading}}">
+    <view class="loading-content">
+      <loading type="spinner" color="#4A90E2" />
+      <text class="loading-text">Membuat grup...</text>
+    </view>
+  </view>
+</view>

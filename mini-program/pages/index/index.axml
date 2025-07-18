@@ -1,0 +1,23 @@
+<view class="splash-container">
+  <view class="splash-content">
+    <image class="logo" src="/assets/logo.png" mode="aspectFit" />
+    <text class="app-name">TouringApp</text>
+    <text class="app-slogan">Komunikasi Grup Touring Lebih Mudah</text>
+    
+    <view class="loading">
+      <loading type="spinner" color="#FFFFFF" />
+    </view>
+    
+    <!-- Debug Information Section -->
+    <view class="debug-section">
+      <text class="debug-title">{{debugInfo}}</text>
+      <text class="debug-item">Backend URL: {{backendUrl}}</text>
+      <text class="debug-item">API Status: {{apiStatus}}</text>
+      
+      <view class="debug-buttons">
+        <button size="mini" type="primary" onTap="navigateToLogin">Login</button>
+        <button size="mini" type="primary" onTap="navigateToGroups">Groups</button>
+      </view>
+    </view>
+  </view>
+</view>

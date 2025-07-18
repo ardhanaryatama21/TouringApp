@@ -1,0 +1,18 @@
+.avatar-container {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-text {
+  color: #FFFFFF;
+  font-weight: bold;
+  text-transform: uppercase;
+}
