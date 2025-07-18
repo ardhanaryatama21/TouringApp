@@ -1,13 +1,13 @@
 [build]
 builder = "nixpacks"
-buildCommand = "cd backend && npm install"
+buildCommand = "npm --prefix backend install"
 
 [deploy]
-startCommand = "cd backend && node server.js"
+startCommand = "node backend/server.js"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 
 [nixpacks]
-install = "cd backend && npm install"
-start = "cd backend && node server.js"
+install = "npm --prefix backend install"
+start = "node backend/server.js"
