@@ -4,8 +4,8 @@ buildCommand = "npm --prefix backend install"
 
 [deploy]
 startCommand = "node backend/server.js"
-healthcheckPath = "/api/health"
-healthcheckTimeout = 100
+healthcheckPath = "/health"
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 
 [nixpacks]
