@@ -1,4 +1,3 @@
-import api from '../utils/api';
 const app = getApp();
 
 Page({
@@ -39,47 +38,41 @@ Page({
     
     this.setData({ isLoading: true });
     
-    console.log('Mencoba login dengan username:', username);
-    console.log('API Base URL:', app.globalData.apiBaseUrl);
-    
-    // FORCE menggunakan URL Railway langsung tanpa melalui api.js
-    const RAILWAY_URL = 'https://touringapp-backend-production.up.railway.app';
-    console.log('FORCE menggunakan URL Railway:', RAILWAY_URL);
-    
+    // Kirim permintaan login ke API
+    console.log('Login URL:', `${app.globalData.apiBaseUrl}/api/auth/login`);
     my.request({
-      url: `${RAILWAY_URL}/api/auth/login`,
+      url: `${app.globalData.apiBaseUrl}/api/auth/login`,
       method: 'POST',
-      data: { username, password },
+      data: {
+        username,
+        password
+      },
       dataType: 'json',
-      headers: {},
       success: (res) => {
-        const data = res.data;
-        console.log('Login berhasil dengan direct request:', data);
-        
-        if (data && data.token) {
+        if (res.data && res.data.token) {
           // Simpan token dan info pengguna
           my.setStorageSync({
             key: 'token',
-            data: data.token
+            data: res.data.token
           });
           
           my.setStorageSync({
             key: 'userInfo',
             data: {
-              _id: data._id,
-              username: data.username,
-              email: data.email,
-              fullName: data.fullName
+              _id: res.data._id,
+              username: res.data.username,
+              email: res.data.email,
+              fullName: res.data.fullName
             }
           });
           
           // Update global data
           app.globalData.isLoggedIn = true;
           app.globalData.userInfo = {
-            _id: data._id,
-            username: data.username,
-            email: data.email,
-            fullName: data.fullName
+            _id: res.data._id,
+            username: res.data.username,
+            email: res.data.email,
+            fullName: res.data.fullName
           };
           
           // Navigasi ke halaman grup
@@ -93,11 +86,9 @@ Page({
             duration: 2000
           });
         }
-        
-        this.setData({ isLoading: false });
       },
       fail: (err) => {
-        console.error('Login error dengan direct request:', err);
+        console.error('Login error:', err);
         console.error('Error details:', JSON.stringify(err));
         
         let errorMessage = 'Terjadi kesalahan saat login. Silakan coba lagi.';
@@ -119,7 +110,8 @@ Page({
           content: errorMessage,
           duration: 2000
         });
-        
+      },
+      complete: () => {
         this.setData({ isLoading: false });
       }
     });

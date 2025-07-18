@@ -1,13 +1,12 @@
-import api from '../../utils/api';
 const app = getApp();
 
 Page({
   data: {
-    username: '',
+    fullName: '',
     email: '',
+    username: '',
     password: '',
     confirmPassword: '',
-    fullName: '',
     isLoading: false
   },
   
@@ -15,15 +14,21 @@ Page({
     // Halaman dimuat
   },
   
-  onInputUsername(e) {
+  onInputFullName(e) {
     this.setData({
-      username: e.detail.value
+      fullName: e.detail.value
     });
   },
   
   onInputEmail(e) {
     this.setData({
       email: e.detail.value
+    });
+  },
+  
+  onInputUsername(e) {
+    this.setData({
+      username: e.detail.value
     });
   },
   
@@ -39,17 +44,11 @@ Page({
     });
   },
   
-  onInputFullName(e) {
-    this.setData({
-      fullName: e.detail.value
-    });
-  },
-  
   handleRegister() {
     const { fullName, email, username, password, confirmPassword } = this.data;
     
     // Validasi input
-    if (!username || !email || !password || !confirmPassword || !fullName) {
+    if (!fullName || !email || !username || !password || !confirmPassword) {
       my.showToast({
         type: 'fail',
         content: 'Semua field harus diisi',
@@ -69,6 +68,17 @@ Page({
       return;
     }
     
+    // Validasi password
+    if (password.length < 6) {
+      my.showToast({
+        type: 'fail',
+        content: 'Password minimal 6 karakter',
+        duration: 2000
+      });
+      return;
+    }
+    
+    // Validasi konfirmasi password
     if (password !== confirmPassword) {
       my.showToast({
         type: 'fail',
@@ -80,51 +90,74 @@ Page({
     
     this.setData({ isLoading: true });
     
-    console.log('Mencoba register dengan username:', username);
-    console.log('API Base URL:', app.globalData.apiBaseUrl);
-    
-    // FORCE menggunakan URL Railway langsung tanpa melalui api.js
-    const RAILWAY_URL = 'https://touringapp-backend-production.up.railway.app';
-    console.log('FORCE menggunakan URL Railway:', RAILWAY_URL);
-    
+    // Kirim permintaan register ke API
+    console.log('Register URL:', `${app.globalData.apiBaseUrl}/api/auth/register`);
     my.request({
-      url: `${RAILWAY_URL}/api/auth/register`,
+      url: `${app.globalData.apiBaseUrl}/api/auth/register`,
       method: 'POST',
-      data: { username, email, password, fullName },
+      data: {
+        fullName,
+        email,
+        username,
+        password
+      },
       dataType: 'json',
-      headers: {},
       success: (res) => {
-        const data = res.data;
-        console.log('Register berhasil dengan direct request:', data);
-        
-        my.showToast({
-          type: 'success',
-          content: 'Registrasi berhasil! Silakan login.',
-          duration: 2000
-        });
-        
-        // Navigasi ke halaman login setelah registrasi berhasil
-        my.navigateTo({
-          url: '/pages/login/login'
-        });
-        
-        this.setData({ isLoading: false });
+        if (res.data && res.data.token) {
+          // Simpan token dan info pengguna
+          my.setStorageSync({
+            key: 'token',
+            data: res.data.token
+          });
+          
+          my.setStorageSync({
+            key: 'userInfo',
+            data: {
+              _id: res.data._id,
+              username: res.data.username,
+              email: res.data.email,
+              fullName: res.data.fullName
+            }
+          });
+          
+          // Update global data
+          app.globalData.isLoggedIn = true;
+          app.globalData.userInfo = {
+            _id: res.data._id,
+            username: res.data.username,
+            email: res.data.email,
+            fullName: res.data.fullName
+          };
+          
+          my.showToast({
+            type: 'success',
+            content: 'Pendaftaran berhasil!',
+            duration: 2000,
+            success: () => {
+              // Navigasi ke halaman grup
+              my.switchTab({
+                url: '/pages/groups/groups'
+              });
+            }
+          });
+        } else {
+          my.showToast({
+            type: 'fail',
+            content: 'Pendaftaran gagal. Silakan coba lagi.',
+            duration: 2000
+          });
+        }
       },
       fail: (err) => {
-        console.error('Register error dengan direct request:', err);
-        console.error('Error details:', JSON.stringify(err));
-        
-        let errorMessage = 'Terjadi kesalahan saat registrasi. Silakan coba lagi.';
+        console.error('Register error:', err);
+        let errorMessage = 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.';
         
         // Cek apakah error berisi pesan dari server
-        if (err.data) {
-          console.log('Error response data:', JSON.stringify(err.data));
-          
-          if (err.data.message) {
+        if (err.data && err.data.message) {
+          if (err.data.message.includes('already exists')) {
+            errorMessage = 'Username atau email sudah digunakan';
+          } else {
             errorMessage = err.data.message;
-          } else if (err.data.errors && err.data.errors.length > 0) {
-            // Handle validation errors
-            errorMessage = err.data.errors[0].msg || 'Data tidak valid';
           }
         }
         
@@ -133,7 +166,8 @@ Page({
           content: errorMessage,
           duration: 2000
         });
-        
+      },
+      complete: () => {
         this.setData({ isLoading: false });
       }
     });
