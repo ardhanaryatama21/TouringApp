@@ -2,38 +2,32 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install curl for healthcheck and verify npm
-RUN apk add --no-cache curl bash
-RUN node --version && npm --version
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
-# Debug: Print current directory and list files
-RUN echo "Current directory: $(pwd)" && ls -la
-
-# Copy the entire repository
-COPY . .
-
-# Debug: Check if backend directory exists
-RUN echo "Checking backend directory:" && ls -la && ls -la backend
-
-# Install dependencies in the backend directory
-WORKDIR /app/backend
-
-# Debug: Print current directory before npm install
-RUN echo "Current directory before npm install: $(pwd)"
-RUN echo "Node and NPM versions:" && node --version && npm --version
+# Copy package.json and package-lock.json first for better caching
+COPY backend/package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# Copy the backend code only
+COPY backend/ ./
+
+# Print debug information
+RUN echo "Current directory: $(pwd)" && ls -la
+RUN node --version && npm --version
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=10000
 
 # Expose the port the app runs on
 EXPOSE 10000
 
 # Add healthcheck
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:${PORT:-10000}/api/health || curl -f http://localhost:${PORT:-10000}/health || exit 1
+  CMD curl -f http://localhost:10000/health || exit 1
 
-# Debug: List files in current directory before starting
-RUN echo "Files in current directory before starting:" && ls -la
-
-# Command to run the app with full path
-CMD ["node", "/app/backend/server.js"]
+# Command to run the app
+CMD ["node", "server.js"]
