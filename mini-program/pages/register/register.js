@@ -1,13 +1,13 @@
-import api from '../utils/api';
+import api from '../../utils/api';
 const app = getApp();
 
 Page({
   data: {
-    fullName: '',
-    email: '',
     username: '',
+    email: '',
     password: '',
     confirmPassword: '',
+    fullName: '',
     isLoading: false
   },
   
@@ -15,21 +15,15 @@ Page({
     // Halaman dimuat
   },
   
-  onInputFullName(e) {
+  onInputUsername(e) {
     this.setData({
-      fullName: e.detail.value
+      username: e.detail.value
     });
   },
   
   onInputEmail(e) {
     this.setData({
       email: e.detail.value
-    });
-  },
-  
-  onInputUsername(e) {
-    this.setData({
-      username: e.detail.value
     });
   },
   
@@ -45,11 +39,17 @@ Page({
     });
   },
   
+  onInputFullName(e) {
+    this.setData({
+      fullName: e.detail.value
+    });
+  },
+  
   handleRegister() {
     const { fullName, email, username, password, confirmPassword } = this.data;
     
     // Validasi input
-    if (!fullName || !email || !username || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword || !fullName) {
       my.showToast({
         type: 'fail',
         content: 'Semua field harus diisi',
@@ -69,17 +69,6 @@ Page({
       return;
     }
     
-    // Validasi password
-    if (password.length < 6) {
-      my.showToast({
-        type: 'fail',
-        content: 'Password minimal 6 karakter',
-        duration: 2000
-      });
-      return;
-    }
-    
-    // Validasi konfirmasi password
     if (password !== confirmPassword) {
       my.showToast({
         type: 'fail',
@@ -91,84 +80,48 @@ Page({
     
     this.setData({ isLoading: true });
     
-    // Siapkan data user untuk registrasi
-    const userData = {
-      fullName,
-      email,
-      username,
-      password
-    };
-    
-    console.log('Mencoba register dengan data:', JSON.stringify(userData));
+    console.log('Mencoba register dengan username:', username);
     console.log('API Base URL:', app.globalData.apiBaseUrl);
     
-    // Menggunakan fungsi register dari utils/api.js yang sudah diperbaiki
-    // untuk memastikan URL yang benar digunakan
-    api.register(userData)
-      .then(data => {
-        console.log('Register berhasil:', data);
+    // FORCE menggunakan URL Railway langsung tanpa melalui api.js
+    const RAILWAY_URL = 'https://touringapp-backend-production.up.railway.app';
+    console.log('FORCE menggunakan URL Railway:', RAILWAY_URL);
+    
+    my.request({
+      url: `${RAILWAY_URL}/api/auth/register`,
+      method: 'POST',
+      data: { username, email, password, fullName },
+      dataType: 'json',
+      headers: {},
+      success: (res) => {
+        const data = res.data;
+        console.log('Register berhasil dengan direct request:', data);
         
-        if (data && data.token) {
-          // Simpan token dan info pengguna
-          my.setStorageSync({
-            key: 'token',
-            data: data.token
-          });
-          
-          my.setStorageSync({
-            key: 'userInfo',
-            data: {
-              _id: data._id,
-              username: data.username,
-              email: data.email,
-              fullName: data.fullName
-            }
-          });
-          
-          // Update global data
-          app.globalData.isLoggedIn = true;
-          app.globalData.userInfo = {
-            _id: data._id,
-            username: data.username,
-            email: data.email,
-            fullName: data.fullName
-          };
-          
-          my.showToast({
-            type: 'success',
-            content: 'Pendaftaran berhasil!',
-            duration: 2000,
-            success: () => {
-              // Navigasi ke halaman grup
-              my.switchTab({
-                url: '/pages/groups/groups'
-              });
-            }
-          });
-        } else {
-          my.showToast({
-            type: 'fail',
-            content: 'Pendaftaran gagal. Silakan coba lagi.',
-            duration: 2000
-          });
-        }
-      })
-      .catch(err => {
-        console.error('Register error:', err);
+        my.showToast({
+          type: 'success',
+          content: 'Registrasi berhasil! Silakan login.',
+          duration: 2000
+        });
+        
+        // Navigasi ke halaman login setelah registrasi berhasil
+        my.navigateTo({
+          url: '/pages/login/login'
+        });
+        
+        this.setData({ isLoading: false });
+      },
+      fail: (err) => {
+        console.error('Register error dengan direct request:', err);
         console.error('Error details:', JSON.stringify(err));
         
-        let errorMessage = 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.';
+        let errorMessage = 'Terjadi kesalahan saat registrasi. Silakan coba lagi.';
         
         // Cek apakah error berisi pesan dari server
         if (err.data) {
           console.log('Error response data:', JSON.stringify(err.data));
           
           if (err.data.message) {
-            if (err.data.message.includes('already exists')) {
-              errorMessage = 'Username atau email sudah digunakan';
-            } else {
-              errorMessage = err.data.message;
-            }
+            errorMessage = err.data.message;
           } else if (err.data.errors && err.data.errors.length > 0) {
             // Handle validation errors
             errorMessage = err.data.errors[0].msg || 'Data tidak valid';
@@ -180,10 +133,10 @@ Page({
           content: errorMessage,
           duration: 2000
         });
-      })
-      .finally(() => {
+        
         this.setData({ isLoading: false });
-      });
+      }
+    });
   },
   
   navigateToLogin() {

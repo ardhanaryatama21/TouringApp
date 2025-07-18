@@ -42,11 +42,19 @@ Page({
     console.log('Mencoba login dengan username:', username);
     console.log('API Base URL:', app.globalData.apiBaseUrl);
     
-    // Menggunakan fungsi login dari utils/api.js yang sudah diperbaiki
-    // untuk memastikan URL yang benar digunakan
-    api.login(username, password)
-      .then(data => {
-        console.log('Login berhasil:', data);
+    // FORCE menggunakan URL Railway langsung tanpa melalui api.js
+    const RAILWAY_URL = 'https://touringapp-backend-production.up.railway.app';
+    console.log('FORCE menggunakan URL Railway:', RAILWAY_URL);
+    
+    my.request({
+      url: `${RAILWAY_URL}/api/auth/login`,
+      method: 'POST',
+      data: { username, password },
+      dataType: 'json',
+      headers: {},
+      success: (res) => {
+        const data = res.data;
+        console.log('Login berhasil dengan direct request:', data);
         
         if (data && data.token) {
           // Simpan token dan info pengguna
@@ -85,9 +93,11 @@ Page({
             duration: 2000
           });
         }
-      })
-      .catch(err => {
-        console.error('Login error:', err);
+        
+        this.setData({ isLoading: false });
+      },
+      fail: (err) => {
+        console.error('Login error dengan direct request:', err);
         console.error('Error details:', JSON.stringify(err));
         
         let errorMessage = 'Terjadi kesalahan saat login. Silakan coba lagi.';
@@ -109,10 +119,10 @@ Page({
           content: errorMessage,
           duration: 2000
         });
-      })
-      .finally(() => {
+        
         this.setData({ isLoading: false });
-      });
+      }
+    });
   },
   
   navigateToRegister() {
