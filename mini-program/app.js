@@ -48,7 +48,7 @@ App({
   globalData: {
     isLoggedIn: false,
     userInfo: null,
-    apiBaseUrl: 'http://localhost:5000', // Menggunakan localhost untuk pengujian di simulator
+    apiBaseUrl: 'https://touringapp-backend-production.up.railway.app', // Menggunakan URL Railway yang dapat diakses dari mana saja
     agoraAppId: '8aaf8e4b769a4859910b338b25658ef1' // Agora App ID
   }
 });

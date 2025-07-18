@@ -39,9 +39,13 @@ Page({
     this.setData({ isLoading: true });
     
     // Kirim permintaan login ke API
-    console.log('Login URL:', `${app.globalData.apiBaseUrl}/api/auth/login`);
+    const loginUrl = `${app.globalData.apiBaseUrl}/api/auth/login`;
+    console.log('Login URL (full):', loginUrl);
+    console.log('API Base URL:', app.globalData.apiBaseUrl);
+    console.log('API Path:', '/api/auth/login');
     my.request({
-      url: `${app.globalData.apiBaseUrl}/api/auth/login`,
+      url: loginUrl,
+      timeout: 30000, // Menambahkan timeout 30 detik
       method: 'POST',
       data: {
         username,

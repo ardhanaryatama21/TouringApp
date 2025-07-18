@@ -7,11 +7,17 @@ const app = getApp();
  * @param {Object} data - Data yang akan dikirim (opsional)
  * @returns {Promise} Promise yang mengembalikan response dari API
  */
-const request = (url, method, data = null) => {
+const request = (url, method, data = {}) => {
+  const app = getApp();
+  const token = my.getStorageSync({ key: 'token' }).data || '';
+  const fullUrl = `${app.globalData.apiBaseUrl}${url}`;
+  
+  console.log('API Request URL:', fullUrl);
+  console.log('API Base URL:', app.globalData.apiBaseUrl);
+  console.log('API Path:', url);
+  
   return new Promise((resolve, reject) => {
-    const token = my.getStorageSync({ key: 'token' }).data;
-    
-    if (!token && url !== '/auth/login' && url !== '/auth/register') {
+    if (!token && url !== '/api/auth/login' && url !== '/api/auth/register') {
       // Redirect ke login jika tidak ada token
       my.redirectTo({
         url: '/pages/login/login'
@@ -67,7 +73,7 @@ const request = (url, method, data = null) => {
  * @returns {Promise} Promise yang mengembalikan data pengguna dan token
  */
 const login = (username, password) => {
-  return request('/auth/login', 'POST', { username, password });
+  return request('/api/auth/login', 'POST', { username, password });
 };
 
 /**
@@ -76,7 +82,7 @@ const login = (username, password) => {
  * @returns {Promise} Promise yang mengembalikan data pengguna dan token
  */
 const register = (userData) => {
-  return request('/auth/register', 'POST', userData);
+  return request('/api/auth/register', 'POST', userData);
 };
 
 /**
@@ -84,7 +90,7 @@ const register = (userData) => {
  * @returns {Promise} Promise yang mengembalikan data profil pengguna
  */
 const getProfile = () => {
-  return request('/auth/profile', 'GET');
+  return request('/api/auth/profile', 'GET');
 };
 
 /**
@@ -92,7 +98,7 @@ const getProfile = () => {
  * @returns {Promise} Promise yang mengembalikan daftar grup
  */
 const getGroups = () => {
-  return request('/groups', 'GET');
+  return request('/api/groups', 'GET');
 };
 
 /**
@@ -101,7 +107,7 @@ const getGroups = () => {
  * @returns {Promise} Promise yang mengembalikan data grup yang dibuat
  */
 const createGroup = (groupData) => {
-  return request('/groups', 'POST', groupData);
+  return request('/api/groups', 'POST', groupData);
 };
 
 /**
@@ -110,7 +116,7 @@ const createGroup = (groupData) => {
  * @returns {Promise} Promise yang mengembalikan detail grup
  */
 const getGroupById = (groupId) => {
-  return request(`/groups/${groupId}`, 'GET');
+  return request(`/api/groups/${groupId}`, 'GET');
 };
 
 /**
@@ -120,7 +126,7 @@ const getGroupById = (groupId) => {
  * @returns {Promise} Promise yang mengembalikan status undangan
  */
 const inviteToGroup = (groupId, email) => {
-  return request(`/groups/${groupId}/invite`, 'POST', { email });
+  return request(`/api/groups/${groupId}/invite`, 'POST', { email });
 };
 
 /**
@@ -128,7 +134,7 @@ const inviteToGroup = (groupId, email) => {
  * @returns {Promise} Promise yang mengembalikan daftar undangan
  */
 const getInvitations = () => {
-  return request('/groups/invitations', 'GET');
+  return request('/api/groups/invitations', 'GET');
 };
 
 /**
@@ -137,7 +143,7 @@ const getInvitations = () => {
  * @returns {Promise} Promise yang mengembalikan status undangan
  */
 const acceptInvitation = (invitationId) => {
-  return request(`/groups/invitations/${invitationId}/accept`, 'PUT');
+  return request(`/api/groups/invitations/${invitationId}/accept`, 'PUT');
 };
 
 /**
@@ -146,7 +152,7 @@ const acceptInvitation = (invitationId) => {
  * @returns {Promise} Promise yang mengembalikan status undangan
  */
 const rejectInvitation = (invitationId) => {
-  return request(`/groups/invitations/${invitationId}/reject`, 'PUT');
+  return request(`/api/groups/invitations/${invitationId}/reject`, 'PUT');
 };
 
 /**
@@ -155,7 +161,7 @@ const rejectInvitation = (invitationId) => {
  * @returns {Promise} Promise yang mengembalikan token dan channel name
  */
 const getCallToken = (groupId) => {
-  return request(`/calls/${groupId}/token`, 'GET');
+  return request(`/api/calls/${groupId}/token`, 'GET');
 };
 
 /**
@@ -164,7 +170,7 @@ const getCallToken = (groupId) => {
  * @returns {Promise} Promise yang mengembalikan daftar pengguna
  */
 const searchUsers = (query) => {
-  return request(`/users/search?query=${encodeURIComponent(query)}`, 'GET');
+  return request(`/api/users/search?query=${encodeURIComponent(query)}`, 'GET');
 };
 
 export default {
