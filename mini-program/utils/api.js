@@ -10,6 +10,15 @@ const app = getApp();
 const request = (url, method, data = {}) => {
   const app = getApp();
   const token = my.getStorageSync({ key: 'token' }).data || '';
+  
+  // FORCE set apiBaseUrl to Railway HTTPS
+  app.globalData.apiBaseUrl = 'https://touringapp-backend-production.up.railway.app';
+  
+  // FORCE fix URL path jika tidak menggunakan /api prefix
+  if (url.includes('/auth/') && !url.includes('/api/auth/')) {
+    url = url.replace('/auth/', '/api/auth/');
+  }
+  
   const fullUrl = `${app.globalData.apiBaseUrl}${url}`;
   
   console.log('=== DEBUG API REQUEST START ===');
@@ -25,16 +34,8 @@ const request = (url, method, data = {}) => {
     console.error('Ini dapat menyebabkan error "http scheme is not allowed"');
     console.error('Base URL saat ini:', app.globalData.apiBaseUrl);
     // Auto-fix URL jika memungkinkan
-    const httpsUrl = app.globalData.apiBaseUrl.replace('http://', 'https://');
-    console.log('URL seharusnya:', httpsUrl);
-  }
-  
-  // Debug: Pastikan URL menggunakan /api prefix
-  if (url.includes('/auth/') && !url.includes('/api/auth/')) {
-    console.error('ERROR: URL tidak menggunakan prefix /api! URL:', url);
-    // Auto-fix URL
-    url = url.replace('/auth/', '/api/auth/');
-    console.log('URL diperbaiki menjadi:', url);
+    app.globalData.apiBaseUrl = app.globalData.apiBaseUrl.replace('http://', 'https://');
+    console.log('URL diperbaiki menjadi:', app.globalData.apiBaseUrl);
   }
   
   return new Promise((resolve, reject) => {

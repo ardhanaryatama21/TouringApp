@@ -1,6 +1,21 @@
 App({
   onLaunch(options) {
     console.log('App onLaunch - start');
+    console.log('=== DEBUG APP INITIALIZATION ===');
+    console.log('API Base URL (initial):', this.globalData.apiBaseUrl);
+    
+    // FORCE set apiBaseUrl to Railway HTTPS
+    this.globalData.apiBaseUrl = 'https://touringapp-backend-production.up.railway.app';
+    console.log('API Base URL (forced):', this.globalData.apiBaseUrl);
+    
+    // CRITICAL: Hapus semua cache yang mungkin menyimpan URL lama
+    try {
+      my.clearStorageSync();
+      console.log('Cache cleared successfully');
+    } catch (e) {
+      console.error('Error clearing cache:', e);
+    }
+    
     try {
       // 检查登录状态
       const token = my.getStorageSync({ key: 'token' }).data;
@@ -10,6 +25,9 @@ App({
       
       this.globalData.isLoggedIn = !!token;
       this.globalData.userInfo = userInfo || null;
+      
+      // Verifikasi apiBaseUrl sekali lagi
+      console.log('API Base URL (after init):', this.globalData.apiBaseUrl);
       
       // SEMENTARA DINONAKTIFKAN: Redirect otomatis ke halaman login
       // Uncomment kode di bawah setelah masalah loading teratasi
