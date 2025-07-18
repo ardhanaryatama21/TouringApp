@@ -48,7 +48,12 @@ app.get('/health', (req, res) => {
 // Error handler middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+// Prioritize Railway port (default 10000) if available
+const PORT = process.env.PORT || 10000;
+
+console.log('=== SERVER INITIALIZATION ===');
+console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+console.log(`Using port: ${PORT}`);
 
 // Create HTTP server
 const server = http.createServer(app);
@@ -64,6 +69,9 @@ const io = socketIo(server, {
 // Setup Socket.io with authentication and event handlers
 setupSocket(io);
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`=== SERVER STARTED ===`);
   console.log(`Server running on port ${PORT}`);
+  console.log(`Health endpoints available at: /health and /api/health`);
+  console.log(`Current timestamp: ${new Date().toISOString()}`);
 });
