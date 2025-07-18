@@ -1,3 +1,4 @@
+import api from '../utils/api';
 const app = getApp();
 
 Page({
@@ -38,45 +39,39 @@ Page({
     
     this.setData({ isLoading: true });
     
-    // Kirim permintaan login ke API
-    const loginUrl = `${app.globalData.apiBaseUrl}/api/auth/login`;
-    console.log('Login URL (full):', loginUrl);
+    console.log('Mencoba login dengan username:', username);
     console.log('API Base URL:', app.globalData.apiBaseUrl);
-    console.log('API Path:', '/api/auth/login');
-    my.request({
-      url: loginUrl,
-      timeout: 30000, // Menambahkan timeout 30 detik
-      method: 'POST',
-      data: {
-        username,
-        password
-      },
-      dataType: 'json',
-      success: (res) => {
-        if (res.data && res.data.token) {
+    
+    // Menggunakan fungsi login dari utils/api.js yang sudah diperbaiki
+    // untuk memastikan URL yang benar digunakan
+    api.login(username, password)
+      .then(data => {
+        console.log('Login berhasil:', data);
+        
+        if (data && data.token) {
           // Simpan token dan info pengguna
           my.setStorageSync({
             key: 'token',
-            data: res.data.token
+            data: data.token
           });
           
           my.setStorageSync({
             key: 'userInfo',
             data: {
-              _id: res.data._id,
-              username: res.data.username,
-              email: res.data.email,
-              fullName: res.data.fullName
+              _id: data._id,
+              username: data.username,
+              email: data.email,
+              fullName: data.fullName
             }
           });
           
           // Update global data
           app.globalData.isLoggedIn = true;
           app.globalData.userInfo = {
-            _id: res.data._id,
-            username: res.data.username,
-            email: res.data.email,
-            fullName: res.data.fullName
+            _id: data._id,
+            username: data.username,
+            email: data.email,
+            fullName: data.fullName
           };
           
           // Navigasi ke halaman grup
@@ -90,8 +85,8 @@ Page({
             duration: 2000
           });
         }
-      },
-      fail: (err) => {
+      })
+      .catch(err => {
         console.error('Login error:', err);
         console.error('Error details:', JSON.stringify(err));
         
@@ -114,11 +109,10 @@ Page({
           content: errorMessage,
           duration: 2000
         });
-      },
-      complete: () => {
+      })
+      .finally(() => {
         this.setData({ isLoading: false });
-      }
-    });
+      });
   },
   
   navigateToRegister() {

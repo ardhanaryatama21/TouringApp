@@ -1,3 +1,4 @@
+import api from '../utils/api';
 const app = getApp();
 
 Page({
@@ -90,43 +91,47 @@ Page({
     
     this.setData({ isLoading: true });
     
-    // Kirim permintaan register ke API
-    console.log('Register URL:', `${app.globalData.apiBaseUrl}/api/auth/register`);
-    my.request({
-      url: `${app.globalData.apiBaseUrl}/api/auth/register`,
-      method: 'POST',
-      data: {
-        fullName,
-        email,
-        username,
-        password
-      },
-      dataType: 'json',
-      success: (res) => {
-        if (res.data && res.data.token) {
+    // Siapkan data user untuk registrasi
+    const userData = {
+      fullName,
+      email,
+      username,
+      password
+    };
+    
+    console.log('Mencoba register dengan data:', JSON.stringify(userData));
+    console.log('API Base URL:', app.globalData.apiBaseUrl);
+    
+    // Menggunakan fungsi register dari utils/api.js yang sudah diperbaiki
+    // untuk memastikan URL yang benar digunakan
+    api.register(userData)
+      .then(data => {
+        console.log('Register berhasil:', data);
+        
+        if (data && data.token) {
           // Simpan token dan info pengguna
           my.setStorageSync({
             key: 'token',
-            data: res.data.token
+            data: data.token
           });
           
           my.setStorageSync({
             key: 'userInfo',
             data: {
-              _id: res.data._id,
-              username: res.data.username,
-              email: res.data.email,
-              fullName: res.data.fullName
+              _id: data._id,
+              username: data.username,
+              email: data.email,
+              fullName: data.fullName
             }
           });
           
           // Update global data
           app.globalData.isLoggedIn = true;
           app.globalData.userInfo = {
-            _id: res.data._id,
-            username: res.data.username,
-            email: res.data.email,
-            fullName: res.data.fullName
+            _id: data._id,
+            username: data.username,
+            email: data.email,
+            fullName: data.fullName
           };
           
           my.showToast({
@@ -147,17 +152,26 @@ Page({
             duration: 2000
           });
         }
-      },
-      fail: (err) => {
+      })
+      .catch(err => {
         console.error('Register error:', err);
+        console.error('Error details:', JSON.stringify(err));
+        
         let errorMessage = 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.';
         
         // Cek apakah error berisi pesan dari server
-        if (err.data && err.data.message) {
-          if (err.data.message.includes('already exists')) {
-            errorMessage = 'Username atau email sudah digunakan';
-          } else {
-            errorMessage = err.data.message;
+        if (err.data) {
+          console.log('Error response data:', JSON.stringify(err.data));
+          
+          if (err.data.message) {
+            if (err.data.message.includes('already exists')) {
+              errorMessage = 'Username atau email sudah digunakan';
+            } else {
+              errorMessage = err.data.message;
+            }
+          } else if (err.data.errors && err.data.errors.length > 0) {
+            // Handle validation errors
+            errorMessage = err.data.errors[0].msg || 'Data tidak valid';
           }
         }
         
@@ -166,11 +180,10 @@ Page({
           content: errorMessage,
           duration: 2000
         });
-      },
-      complete: () => {
+      })
+      .finally(() => {
         this.setData({ isLoading: false });
-      }
-    });
+      });
   },
   
   navigateToLogin() {

@@ -12,9 +12,30 @@ const request = (url, method, data = {}) => {
   const token = my.getStorageSync({ key: 'token' }).data || '';
   const fullUrl = `${app.globalData.apiBaseUrl}${url}`;
   
+  console.log('=== DEBUG API REQUEST START ===');
   console.log('API Request URL:', fullUrl);
   console.log('API Base URL:', app.globalData.apiBaseUrl);
   console.log('API Path:', url);
+  console.log('API Method:', method);
+  console.log('API Data:', JSON.stringify(data));
+  
+  // Verifikasi protokol HTTPS
+  if (app.globalData.apiBaseUrl.startsWith('http://')) {
+    console.error('ERROR: API Base URL menggunakan HTTP, bukan HTTPS!');
+    console.error('Ini dapat menyebabkan error "http scheme is not allowed"');
+    console.error('Base URL saat ini:', app.globalData.apiBaseUrl);
+    // Auto-fix URL jika memungkinkan
+    const httpsUrl = app.globalData.apiBaseUrl.replace('http://', 'https://');
+    console.log('URL seharusnya:', httpsUrl);
+  }
+  
+  // Debug: Pastikan URL menggunakan /api prefix
+  if (url.includes('/auth/') && !url.includes('/api/auth/')) {
+    console.error('ERROR: URL tidak menggunakan prefix /api! URL:', url);
+    // Auto-fix URL
+    url = url.replace('/auth/', '/api/auth/');
+    console.log('URL diperbaiki menjadi:', url);
+  }
   
   return new Promise((resolve, reject) => {
     if (!token && url !== '/api/auth/login' && url !== '/api/auth/register') {
@@ -31,8 +52,25 @@ const request = (url, method, data = {}) => {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
+    // Fix URL jika perlu
+    const fixedUrl = url.includes('/auth/') && !url.includes('/api/auth/') 
+      ? url.replace('/auth/', '/api/auth/') 
+      : url;
+    
+    // Pastikan menggunakan base URL dengan HTTPS
+    let apiBaseUrl = app.globalData.apiBaseUrl;
+    if (apiBaseUrl.startsWith('http://')) {
+      console.error('ERROR: Mengubah HTTP ke HTTPS untuk request');
+      apiBaseUrl = apiBaseUrl.replace('http://', 'https://');
+    }
+    
+    const finalUrl = `${apiBaseUrl}${fixedUrl}`;
+    console.log('Final Request URL:', finalUrl);
+    console.log('URL Protocol:', finalUrl.startsWith('https://') ? 'HTTPS (aman)' : 'HTTP (tidak aman)');
+    console.log('=== DEBUG API REQUEST END ===');
+    
     my.request({
-      url: `${app.globalData.apiBaseUrl}${url}`,
+      url: finalUrl,
       method,
       headers,
       data,

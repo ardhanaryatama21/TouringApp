@@ -17,5 +17,13 @@
   "description": "Aplikasi komunikasi grup touring",
   "simulatorType": "alipay",
   "simulatorPluginLibVersion": {},
-  "condition": {}
+  "condition": {},
+  "network": {
+    "request": {
+      "https": true,
+      "domains": [
+        "touringapp-backend-production.up.railway.app"
+      ]
+    }
+  }
 }
