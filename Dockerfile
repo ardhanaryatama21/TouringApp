@@ -32,5 +32,8 @@ EXPOSE 10000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:${PORT:-10000}/api/health || curl -f http://localhost:${PORT:-10000}/health || exit 1
 
-# Command to run the app
-CMD ["node", "server.js"]
+# Debug: List files in current directory before starting
+RUN echo "Files in current directory before starting:" && ls -la
+
+# Command to run the app with full path
+CMD ["node", "/app/backend/server.js"]
