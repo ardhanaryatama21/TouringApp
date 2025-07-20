@@ -261,16 +261,29 @@ exports.rejectInvitation = async (req, res) => {
 // @route   GET /api/groups/invitations
 // @access  Private
 exports.getMyInvitations = async (req, res) => {
+  console.log('=== getMyInvitations called ===');
+  console.log('User ID:', req.user._id);
+  
   try {
+    console.log('Looking for invitations with user ID:', req.user._id);
+    
+    // Verify that Invitation model is loaded correctly
+    console.log('Invitation model schema:', JSON.stringify(Invitation.schema.paths));
+    
     const invitations = await Invitation.find({
       invitedUser: req.user._id,
       status: 'pending'
     })
       .populate('group', 'name description')
       .populate('invitedBy', 'username fullName');
-
+    
+    console.log('Found invitations:', invitations.length);
+    console.log('Invitations data:', JSON.stringify(invitations));
+    
     res.json(invitations);
   } catch (error) {
+    console.error('Error in getMyInvitations:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ message: error.message });
   }
 };

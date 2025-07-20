@@ -45,66 +45,61 @@ Page({
     this.leaveChannel();
   },
   
-  // Inisialisasi Agora SDK
+  // Inisialisasi Agora SDK (simulasi)
   initializeAgoraSDK() {
     const userInfo = my.getStorageSync({ key: 'userInfo' }).data;
     
-    // Minta token dari server
-    this.getAgoraToken()
-      .then(tokenInfo => {
-        if (!tokenInfo) {
-          throw new Error('Gagal mendapatkan token panggilan');
-        }
-        
-        this.setData({
-          rtcToken: tokenInfo.token,
-          channelName: tokenInfo.channelName
-        });
-        
-        // Inisialisasi Agora RTC Client
-        const rtcClient = my.createRtcEngine();
-        
-        if (!rtcClient) {
-          throw new Error('Gagal membuat RTC Engine');
-        }
-        
-        // Simpan referensi client
-        this.setData({ rtcClient });
-        
-        // Setup event listeners
-        rtcClient.on('error', this.handleRtcError.bind(this));
-        rtcClient.on('joinChannelSuccess', this.handleJoinChannelSuccess.bind(this));
-        rtcClient.on('leaveChannel', this.handleLeaveChannel.bind(this));
-        rtcClient.on('userJoined', this.handleUserJoined.bind(this));
-        rtcClient.on('userOffline', this.handleUserOffline.bind(this));
-        rtcClient.on('audioVolumeIndication', this.handleAudioVolumeIndication.bind(this));
-        
-        // Inisialisasi RTC Engine
-        rtcClient.init(app.globalData.agoraAppId);
-        
-        // Konfigurasi audio
-        rtcClient.enableAudio();
-        rtcClient.setEnableSpeakerphone(true);
-        
-        // Gabung ke channel
-        this.setData({ loadingText: 'Bergabung dengan panggilan...' });
-        rtcClient.joinChannel(this.data.rtcToken, this.data.channelName, null, userInfo._id);
-        
-        // Tambahkan diri sendiri ke daftar peserta
-        this.setData({
-          participants: [{
-            uid: userInfo._id,
-            name: userInfo.fullName,
-            isMe: true,
-            isMuted: false,
-            isSpeaking: false
-          }]
-        });
-      })
-      .catch(error => {
-        console.error('Initialize Agora SDK error:', error);
-        this.showError(error.message || 'Gagal memulai panggilan');
+    // Import callManager untuk menggunakan simulasi RTC engine
+    const callManager = require('../../utils/callManager').default;
+    
+    try {
+      // Inisialisasi simulasi RTC engine
+      const rtcClient = callManager.initRtcEngine();
+      
+      if (!rtcClient) {
+        throw new Error('Gagal membuat RTC Engine');
+      }
+      
+      // Simpan referensi client
+      this.setData({ 
+        rtcClient,
+        rtcToken: 'simulated-token', // Token simulasi
+        channelName: `group_${this.data.groupId}` // Channel name simulasi
       });
+      
+      // Setup event listeners
+      rtcClient.on('error', this.handleRtcError.bind(this));
+      rtcClient.on('joinChannelSuccess', this.handleJoinChannelSuccess.bind(this));
+      rtcClient.on('leaveChannel', this.handleLeaveChannel.bind(this));
+      rtcClient.on('userJoined', this.handleUserJoined.bind(this));
+      rtcClient.on('userOffline', this.handleUserOffline.bind(this));
+      rtcClient.on('audioVolumeIndication', this.handleAudioVolumeIndication.bind(this));
+      
+      // Inisialisasi RTC Engine
+      rtcClient.init();
+      
+      // Konfigurasi audio
+      rtcClient.enableAudio();
+      rtcClient.setEnableSpeakerphone(true);
+      
+      // Gabung ke channel
+      this.setData({ loadingText: 'Bergabung dengan panggilan...' });
+      rtcClient.joinChannel(this.data.rtcToken, this.data.channelName, null, userInfo._id);
+      
+      // Tambahkan diri sendiri ke daftar peserta
+      this.setData({
+        participants: [{
+          uid: userInfo._id,
+          name: userInfo.fullName,
+          isMe: true,
+          isMuted: false,
+          isSpeaking: false
+        }]
+      });
+    } catch (error) {
+      console.error('Initialize Simulated RTC engine error:', error);
+      this.showError(error.message || 'Gagal memulai panggilan');
+    }
   },
   
   // Mendapatkan token Agora dari server

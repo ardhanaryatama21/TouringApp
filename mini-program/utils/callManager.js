@@ -1,25 +1,141 @@
 /**
- * Utilitas untuk mengelola panggilan grup menggunakan Agora SDK
+ * Utilitas untuk mengelola panggilan grup menggunakan simulasi Agora SDK
+ * Karena my.createRtcEngine tidak tersedia di lingkungan Mini Program Alipay,
+ * kita membuat simulasi untuk fungsi-fungsi yang diperlukan
  */
 
 const app = getApp();
 
+// Event handlers untuk simulasi RTC
+let eventHandlers = {};
+
 /**
- * Inisialisasi Agora RTC Engine
- * @returns {Object} RTC Engine instance
+ * Inisialisasi Simulasi RTC Engine
+ * @returns {Object} Simulasi RTC Engine instance
  */
 const initRtcEngine = () => {
   try {
-    const rtcEngine = my.createRtcEngine();
+    console.log('Initializing simulated RTC engine');
     
-    // Konfigurasi RTC Engine
-    rtcEngine.setChannelProfile('communication');
-    rtcEngine.enableAudio();
-    rtcEngine.setEnableSpeakerphone(true);
+    // Buat objek simulasi RTC Engine
+    const simulatedRtcEngine = {
+      // Menyimpan status internal
+      _isMuted: false,
+      _isSpeakerOn: true,
+      _isConnected: false,
+      _channelName: '',
+      
+      // Metode untuk mendaftarkan event handler
+      on: function(eventName, callback) {
+        console.log(`Registering event handler for: ${eventName}`);
+        eventHandlers[eventName] = callback;
+        return this;
+      },
+      
+      // Metode untuk menghapus semua event handler
+      removeAllListeners: function() {
+        console.log('Removing all event listeners');
+        eventHandlers = {};
+        return this;
+      },
+      
+      // Inisialisasi engine
+      init: function() {
+        console.log('Simulated RTC engine initialized');
+        return this;
+      },
+      
+      // Konfigurasi profil channel
+      setChannelProfile: function(profile) {
+        console.log(`Setting channel profile to: ${profile}`);
+        return this;
+      },
+      
+      // Aktifkan audio
+      enableAudio: function() {
+        console.log('Audio enabled');
+        return this;
+      },
+      
+      // Nonaktifkan audio
+      disableAudio: function() {
+        console.log('Audio disabled');
+        return this;
+      },
+      
+      // Atur speaker
+      setEnableSpeakerphone: function(enabled) {
+        console.log(`Speaker ${enabled ? 'enabled' : 'disabled'}`);
+        this._isSpeakerOn = enabled;
+        return this;
+      },
+      
+      // Gabung channel
+      joinChannel: function(token, channelName, info, uid, callback) {
+        console.log(`Joining channel: ${channelName} with uid: ${uid}`);
+        this._channelName = channelName;
+        
+        // Simulasi delay jaringan
+        setTimeout(() => {
+          this._isConnected = true;
+          
+          // Panggil callback sukses
+          if (callback) callback(null);
+          
+          // Trigger event joinChannelSuccess
+          if (eventHandlers.joinChannelSuccess) {
+            eventHandlers.joinChannelSuccess(channelName, uid);
+          }
+          
+          // Simulasi user lain bergabung setelah beberapa detik
+          setTimeout(() => {
+            if (eventHandlers.userJoined) {
+              // Simulasi 2 pengguna lain bergabung dengan UID acak
+              const randomUid1 = Math.floor(Math.random() * 1000000);
+              eventHandlers.userJoined(randomUid1, 0);
+              
+              setTimeout(() => {
+                const randomUid2 = Math.floor(Math.random() * 1000000);
+                eventHandlers.userJoined(randomUid2, 0);
+              }, 3000);
+            }
+          }, 2000);
+        }, 1500);
+        
+        return this;
+      },
+      
+      // Keluar channel
+      leaveChannel: function(callback) {
+        console.log('Leaving channel');
+        
+        // Simulasi delay jaringan
+        setTimeout(() => {
+          this._isConnected = false;
+          
+          // Panggil callback sukses
+          if (callback) callback(null);
+          
+          // Trigger event leaveChannel
+          if (eventHandlers.leaveChannel) {
+            eventHandlers.leaveChannel();
+          }
+        }, 1000);
+        
+        return this;
+      },
+      
+      // Mute audio lokal
+      muteLocalAudioStream: function(muted) {
+        console.log(`Local audio ${muted ? 'muted' : 'unmuted'}`);
+        this._isMuted = muted;
+        return this;
+      }
+    };
     
-    return rtcEngine;
+    return simulatedRtcEngine;
   } catch (error) {
-    console.error('Failed to initialize RTC engine:', error);
+    console.error('Failed to initialize simulated RTC engine:', error);
     throw error;
   }
 };

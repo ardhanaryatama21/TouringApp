@@ -31,6 +31,11 @@ router.post(
 // @access  Private
 router.get('/', protect, getMyGroups);
 
+// @route   GET /api/groups/invitations
+// @desc    Get all pending invitations for current user
+// @access  Private
+router.get('/invitations', protect, getMyInvitations);
+
 // @route   GET /api/groups/:id
 // @desc    Get a group by ID
 // @access  Private
@@ -57,11 +62,6 @@ router.put('/invitations/:id/accept', protect, acceptInvitation);
 // @desc    Reject group invitation
 // @access  Private
 router.put('/invitations/:id/reject', protect, rejectInvitation);
-
-// @route   GET /api/groups/invitations
-// @desc    Get all pending invitations for current user
-// @access  Private
-router.get('/invitations', protect, getMyInvitations);
 
 // @route   DELETE /api/groups/:id
 // @desc    Delete a group

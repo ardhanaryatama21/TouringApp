@@ -10,6 +10,7 @@ my.request = function(options) {
   if (options.url) {
     // Deteksi URL yang menggunakan IP lokal atau localhost
     if (options.url.includes('192.168.18.191:5000') || 
+        options.url.includes('192.168.18.206:5000') || 
         options.url.includes('localhost:5000') || 
         options.url.includes('127.0.0.1:5000')) {
       
@@ -21,8 +22,11 @@ my.request = function(options) {
       // Ekstrak path dari URL asli
       let path = options.url.split('/').slice(3).join('/');
       
-      // Perbaiki path jika perlu
-      if (path.startsWith('auth/')) {
+      // Perbaiki path jika perlu untuk semua endpoint yang memerlukan prefix /api/
+      if (path.startsWith('auth/') || 
+          path.startsWith('users/') || 
+          path.startsWith('groups/') || 
+          path.startsWith('calls/')) {
         path = 'api/' + path;
         console.log('PATH FIXED: Added /api prefix to', path);
       }

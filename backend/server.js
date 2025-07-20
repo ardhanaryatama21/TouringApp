@@ -30,12 +30,21 @@ const authRoutes = require('./routes/auth');
 // Gunakan routes dengan prefix /api (standar)
 app.use('/api/auth', authRoutes);
 app.use('/api/users', require('./routes/users'));
-app.use('/api/groups', require('./routes/groups'));
+const groupRoutes = require('./routes/groups');
+app.use('/api/groups', groupRoutes);
 app.use('/api/calls', require('./routes/calls'));
 
 // Fallback routes untuk auth tanpa prefix /api (untuk kompatibilitas dengan Mini Program)
 console.log('Setting up fallback auth routes without /api prefix for backward compatibility');
 app.use('/auth', authRoutes);
+
+// Fallback routes untuk groups tanpa prefix /api (untuk kompatibilitas dengan Mini Program)
+console.log('Setting up fallback group routes without /api prefix for backward compatibility');
+app.use('/groups', groupRoutes);
+
+// Fallback routes untuk calls tanpa prefix /api (untuk kompatibilitas dengan Mini Program)
+console.log('Setting up fallback call routes without /api prefix for backward compatibility');
+app.use('/calls', require('./routes/calls'));
 
 // Basic route for testing
 app.get('/', (req, res) => {
